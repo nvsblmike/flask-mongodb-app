@@ -14,21 +14,25 @@ This guide provides step-by-step instructions to deploy a Python Flask applicati
 ```bash
 git clone https://github.com/nvsblmike/flask-mongodb-app.git
 cd flask-mongodb-app
+```
 
 ## 2. Build and Push Docker Image
 
 a. Build the Docker Image:
 ```bash
 docker build -t <your-dockerhub-username>/flask-mongodb-app:latest .
+```
 
 b. Log in to Docker Hub:
 ```bash
 docker login
+```
 
 c. Push the Docker Image:
 
 ```bash
 docker push <your-dockerhub-username>/flask-mongodb-app:latest
+```
 
 ## 3. Create Kubernetes Secrets
 
@@ -36,6 +40,7 @@ To create Kubernetes Secrets, run the command:
 
 ```bash
 kubectl apply -f k8s/mongodb-secrets.yaml
+```
 
 ## 4. Create Persistent Volumes and Claims
 
@@ -43,18 +48,21 @@ To create a persistent Volume and PVC with the PVC file, run:
 
 ```bash
 kubectl apply -f k8s/mongodb-pvc.yaml
+```
 
 ## 5. Deploy MongoDB StatefulSet
 
 To create the StatefulSet and service, run:
 
-``bash
+```bash
 kubectl apply -f k8s/mongodb-statefulset.yaml
+```
 
 You can check the deployment by running:
 
 ```bash
 kubectl get pods -l app=mongodb
+```
 
 ## 6. Deploy Flask Application
 
@@ -62,41 +70,48 @@ To create the Flask Deployment and service, run:
 
 ```bash
 kubectl apply -f k8s/flask-deployment.yaml
+```
 
-## 8. Verify Your Deployment
+## 7. Verify Your Deployment
 
 a. You can firstly check your deployments and resources to see if they are properly configured by running:
 
 ```bash
 kubectl get all
+```
 
 b. Then do a port forwarding to ensure the application is accessible on your browser:
 
 ```bash
 kubectl port-forward svc/flask-service -p 5000:5000
+```
 
 c. Go ahead to check on your web browser
 
 ```bash
 http://localhost:5000
+```
 
 d. You can test the endpoints by:
 
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{"key":"value"}' http://localhost:5000
+```
 
-## 9. Clean Up Resources
+## 8. Clean Up Resources
 
 To delete all resources follow these steps:
 - firstly scale down the replicas
 
 ```bash
 kubectl get deployments -o name | xargs -n 1 kubectl scale --replicas=0
+```
 
 - delete all resources
 
 ```bash
 kubectl delete all --all
+```
 
 - delete other resources
 
@@ -104,12 +119,12 @@ kubectl delete all --all
 kubectl delete configmaps --all
 kubectl delete secrets --all
 kubectl delete pvc --all
-
+```
 - running this should return no resources
 
 ```bash
 kubectl get all
-
+```
 
 ## DNS Resolution in Kubernetes
 
@@ -135,9 +150,9 @@ In the context of the Flask application connecting to MongoDB, DNS resolution al
 
 The connection string in the Flask application would be:
 
-```python
+```t
 MONGODB_URI = "mongodb://<username>:<password>@mongodb-service:27017/"
-
+```
 
 ## Resource Requests and Limits in Kubernetes
 
@@ -192,7 +207,7 @@ spec:
           limits:
             memory: "500Mi"
             cpu: "500m"
-
+```
 
 ## Design Choices
 
